@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 
@@ -47,7 +50,18 @@ public class Console extends JFrame {
         ConsolePrintStream cps = new ConsolePrintStream();
         System.setOut(cps);
         System.setErr(cps);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCharset(StandardCharsets.UTF_8);
+    }
+
+    public void setDefaultCharset(Charset charset) {
+        try {
+            final Field field = Charset.class.getDeclaredField("defaultCharset") ;
+            field.setAccessible(true) ;
+            field.set(null, charset) ;
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            ex.printStackTrace() ;
+        }
     }
 
     public void clearAllLines() {
